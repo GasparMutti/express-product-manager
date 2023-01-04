@@ -1,9 +1,8 @@
-const fs = require("fs");
-class ProductManager {
+import fs from "fs";
+export default class ProductManager {
   constructor() {
     this.id = 0;
     this.path = "./products.json";
-    this.createJSON();
   }
 
   async addProduct(title, description, price, thumbnail, code, stock) {
@@ -39,9 +38,7 @@ class ProductManager {
   async getProducts() {
     const productsDocument = await fs.promises.readFile(this.path);
     const productsJSON = JSON.parse(productsDocument);
-    productsJSON.products.length > 0
-      ? productsJSON.products.forEach((product) => console.log(product))
-      : console.log("No hay productos en el arreglo");
+    return productsJSON;
   }
 
   async getProductById(id) {
@@ -49,12 +46,16 @@ class ProductManager {
     else {
       const productsDocument = await fs.promises.readFile(this.path);
       const productsJSON = JSON.parse(productsDocument);
-      productsJSON.products.find((product) => product.id === id)
-        ? console.log(
-            `Este es el producto con el ID ${id}`,
-            productsJSON.products.filter((product) => product.id === id)
-          )
-        : console.log("Error Not Found");
+      const productFind = productsJSON.products.find(
+        (product) => product.id === id
+      );
+      if (productFind) {
+        return productFind;
+      } else {
+        return {
+          error: "not found",
+        };
+      }
     }
   }
 
